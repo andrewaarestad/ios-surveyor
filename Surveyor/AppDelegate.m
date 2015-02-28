@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+#import "Mapbox.h"
+
 @interface AppDelegate ()
 
 @end
@@ -15,8 +17,19 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    //self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    [[RMConfiguration configuration] setAccessToken:@"pk.eyJ1IjoiZ2F0aGl1cyIsImEiOiJPWENBdjhFIn0.K76NVprgWuRlnvst1kMnDw"];
+    
+    /*
+    MainViewController *mainVC = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
+    self.window.rootViewController = mainVC;
+    
+    [self.window makeKeyAndVisible];
+     */
+    
     return YES;
 }
 
