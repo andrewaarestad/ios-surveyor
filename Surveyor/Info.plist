@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -20,8 +22,39 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>9d0dd532a99dee94eb7938de0d218f020ee23872</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict>
+					<key>accessToken</key>
+					<string>pk.eyJ1IjoiZ2F0aGl1cyIsImEiOiJPWENBdjhFIn0.K76NVprgWuRlnvst1kMnDw</string>
+				</dict>
+				<key>KitName</key>
+				<string>MGLAccountManager</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
-	<true/>
+    <true/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is used to center the map.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is used to center the map.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

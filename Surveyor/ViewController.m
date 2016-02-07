@@ -8,45 +8,77 @@
 
 #import "ViewController.h"
 
-#import "Mapbox.h"
+//#import "Mapbox.h"
 #import "GpsInterface.h"
+#import <Mapbox/Mapbox.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define kMapboxMapID @"gathius.lb5ncnhg"
 
-@interface ViewController () <GpsInterfaceObserver>
+@interface ViewController () <GpsInterfaceObserver, MGLMapViewDelegate, CLLocationManagerDelegate>
+
+@property (nonatomic) MGLMapView *map;
+@property (nonatomic,strong) CLLocationManager *locationManager;
 
 @end
 
 @implementation ViewController
+{
+    MGLPointAnnotation *_currentLocation;
+    BOOL _hasDoneInitialZoom;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    RMMapboxSource *onlineSource = [[RMMapboxSource alloc] initWithMapID:kMapboxMapID];
-    
-    RMMapView *mapView = [[RMMapView alloc] initWithFrame:self.view.bounds andTilesource:onlineSource];
+    _hasDoneInitialZoom = NO;
     
     
-    mapView.zoom = 15;
+    if ([CLLocationManager locationServicesEnabled]) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
+        [self.locationManager startUpdatingLocation];
+    } else {
+        NSLog(@"Location services are not enabled");
+    }
     
-    CLLocationCoordinate2D startLocation = { 46.733454, -95.818355 };
     
-    [mapView setCenterCoordinate:startLocation];
     
-    mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.map = [[MGLMapView alloc] initWithFrame:self.view.bounds];
+    self.map.delegate = self;
+    [self.map setStyleURL:[MGLStyle satelliteStyleURL]];
+    [self.map setCenterCoordinate:CLLocationCoordinate2DMake(46, -94)
+                        zoomLevel:6
+                         animated:NO];
     
-    [self.view addSubview:mapView];
+    [self.view addSubview:self.map];
+    
+    
+    
+    [self drawMultipolygon:[[NSBundle mainBundle] pathForResource:@"01_us_states" ofType:@"geojson"]];
+    
+    
+    
+
     
     [GpsInterface addObserver:self];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
+    
     [GpsInterface addObserver:self];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+    
     [GpsInterface removeObserver:self];
 }
 
@@ -54,6 +86,53 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
+- (BOOL)mapView:(__unused MGLMapView *)mapView annotationCanShowCallout:(__unused id <MGLAnnotation>)annotation {
+    return YES;
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    if (!_hasDoneInitialZoom){
+        CLLocation *location = [locations lastObject];
+        
+        [self.map setCenterCoordinate:location.coordinate
+                            zoomLevel:13
+                             animated:NO];
+        
+        
+        GpsLocation *gpsLocation = [[GpsLocation alloc] init];
+        gpsLocation.coord = location.coordinate;
+        [self locationAvailable:gpsLocation];
+        
+        [self.map selectAnnotation:_currentLocation animated:YES];
+        
+        _hasDoneInitialZoom = YES;
+        
+    }
+}
+
+
+/*
+- (void)changeStyle:(UILongPressGestureRecognizer *)longPress {
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+        NSArray *styles = @[ @"streets", @"emerald", @"light", @"dark", @"satellite" ];
+        NSString *currentStyle = [[self.map.styleURL.lastPathComponent componentsSeparatedByString:@"-"] firstObject];
+        NSUInteger index = [styles indexOfObject:currentStyle];
+        if (index == styles.count - 1) {
+            index = 0;
+        } else {
+            index += 1;
+        }
+        NSURL *newStyleURL = [[NSURL alloc] initWithString:
+                              [NSString stringWithFormat:@"asset://styles/%@-v8.json", styles[index]]];
+        self.map.styleURL = newStyleURL;
+    }
+}
+ */
+
 
 /*
  #pragma mark - Navigation
@@ -66,9 +145,92 @@
  */
 
 
+- (void)drawMultipolygon:(NSString*)jsonPath
+{
+    // Perform GeoJSON parsing on a background thread
+    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(backgroundQueue, ^(void){
+        
+        // Load and serialize the GeoJSON into a dictionary filled with properly-typed objects
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:[[NSData alloc] initWithContentsOfFile:jsonPath] options:0 error:nil];
+
+        // Load the `features` dictionary for iteration
+        for (NSDictionary *feature in jsonDict[@"features"]) {
+            NSString *featureType = feature[@"geometry"][@"type"];
+            NSString *featureName = feature[@"properties"][@"NAME"];
+            NSArray *featureCoords = feature[@"geometry"][@"coordinates"];
+            //NSLog(@"Trying to draw object featureType: %@",featureType);
+            // Our GeoJSON only has one feature: a line string
+            if ([featureType isEqualToString:@"MultiPolygon"]){
+                for (NSArray *polygonCoords in featureCoords){
+                    for (NSArray *polygonSubCoords in polygonCoords){
+                        [self drawPolygon:featureName coords:polygonSubCoords];
+                    }
+                }
+            } else if ([featureType isEqualToString:@"Polygon"]) {
+                for (NSArray *polygonCoords in featureCoords){
+                    [self drawPolygon:featureName coords:polygonCoords];
+                }
+            } else {
+                NSLog(@"Unsupported feature type: %@",featureType);
+            }
+        }
+
+    });
+}
+
+-(void)drawPolygon:(NSString*) name coords:(NSArray*)coords
+{
+    NSUInteger coordinatesCount = coords.count;
+    
+    // Create a coordinates array, sized to fit all of the coordinates in the line.
+    // This array will hold the properly formatted coordinates for our MGLPolyline.
+    CLLocationCoordinate2D coordinates[coordinatesCount];
+    
+    // Iterate over `rawCoordinates` once for each coordinate on the line
+    for (NSUInteger index = 0; index < coordinatesCount; index++)
+    {
+        // Get the individual coordinate for this index
+        NSArray *point = [coords objectAtIndex:index];
+        
+        // GeoJSON is "longitude, latitude" order, but we need the opposite
+        CLLocationDegrees lat = [[point objectAtIndex:1] doubleValue];
+        CLLocationDegrees lng = [[point objectAtIndex:0] doubleValue];
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(lat, lng);
+        
+        // Add this formatted coordinate to the final coordinates array at the same index
+        coordinates[index] = coordinate;
+    }
+    
+    MGLPolyline *polyline = [MGLPolyline polylineWithCoordinates:coordinates count:coordinatesCount];
+    polyline.title = name;
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [weakSelf.map addAnnotation:polyline];
+    });
+}
+
+
 -(void)locationAvailable:(GpsLocation *)location
 {
     NSLog(@"Draw location on map: %@",location);
+    
+    if (_currentLocation == nil){
+        _currentLocation = [[MGLPointAnnotation alloc] init];
+    } else {
+        [self.map removeAnnotation:_currentLocation];
+    }
+    
+    
+    _currentLocation.coordinate = location.coord;
+    _currentLocation.title = @"Current Location";
+    _currentLocation.subtitle = @"Location from BLE GPS Receiver";
+    
+    
+    [self.map addAnnotation:_currentLocation];
+    
+    
 }
 
 @end

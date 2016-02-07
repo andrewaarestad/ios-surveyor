@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreLocation/CoreLocation.h"
+
 @interface GpsLocation : NSObject
+
+@property CLLocationCoordinate2D coord;
 
 @end
