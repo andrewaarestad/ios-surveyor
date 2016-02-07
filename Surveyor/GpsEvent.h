@@ -10,7 +10,7 @@
 
 #import "CoreLocation/CoreLocation.h"
 
-@interface GpsLocation : NSObject
+@interface GpsEvent : NSObject
 
 @property CLLocationCoordinate2D coord;
 

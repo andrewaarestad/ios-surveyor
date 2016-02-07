@@ -72,13 +72,14 @@
 {
     [super viewDidAppear:animated];
     
-    
+    [GpsInterface start];
     [GpsInterface addObserver:self];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
+    [GpsInterface stop];
     [GpsInterface removeObserver:self];
 }
 
@@ -103,7 +104,7 @@
                              animated:NO];
         
         
-        GpsLocation *gpsLocation = [[GpsLocation alloc] init];
+        GpsEvent *gpsLocation = [[GpsEvent alloc] init];
         gpsLocation.coord = location.coordinate;
         [self locationAvailable:gpsLocation];
         
@@ -212,7 +213,12 @@
 }
 
 
--(void)locationAvailable:(GpsLocation *)location
+-(void)gpsReceiver:(GpsReceiver *)receiver event:(GpsEvent *)event
+{
+    [self locationAvailable:event];
+}
+
+-(void)locationAvailable:(GpsEvent *)location
 {
     NSLog(@"Draw location on map: %@",location);
     

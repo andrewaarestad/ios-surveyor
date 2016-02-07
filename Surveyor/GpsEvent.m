@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Mapbox / Development Seed. All rights reserved.
 //
 
-#import "GpsLocation.h"
+#import "GpsEvent.h"
 
-@implementation GpsLocation
+@implementation GpsEvent
 
 @end

@@ -7,11 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GpsLocation.h"
+#import "GpsEvent.h"
+#import "GpsReceiver.h"
+
 
 @protocol GpsInterfaceObserver <NSObject>
 
--(void)locationAvailable:(GpsLocation*)location;
+-(void)gpsReceiver:(GpsReceiver*)receiver event:(GpsEvent*)event;
 
 @end
 
@@ -20,8 +22,9 @@
 +(void)addObserver:(id<GpsInterfaceObserver>)observer;
 +(void)removeObserver:(id<GpsInterfaceObserver>)observer;
 
-+(void)connect;
++(void)start;
++(void)stop;
 
-@property NSMutableArray *observers;
+@property NSHashTable *observers;
 
 @end
