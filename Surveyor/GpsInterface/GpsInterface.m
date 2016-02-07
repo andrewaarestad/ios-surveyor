@@ -16,6 +16,7 @@
 {
     CBCentralManager *_centralManager;
     GpsReceiver *_currentConnection;
+    NSMutableArray *_pendingPeripherals;
 }
 
 +(GpsInterface*)instance
@@ -66,6 +67,7 @@
         } else {
             _observers = [NSHashTable hashTableWithOptions:NSPointerFunctionsWeakMemory];
         }
+        _pendingPeripherals = [NSMutableArray array];
     }
     
     return self;
@@ -83,7 +85,7 @@
 
 - (void)startScan
 {
-    if (_centralManager.state != CBCentralManagerStatePoweredOn){
+    if (_centralManager.state == CBCentralManagerStatePoweredOn){
         if (![_centralManager isScanning]){
             NSLog(@"Starting scan...");
             
@@ -138,6 +140,7 @@
         
         NSLog(@"BLE: Connecting to peripheral %@", peripheral);
         [_centralManager connectPeripheral:peripheral options:nil];
+        [_pendingPeripherals addObject:peripheral];
     } else {
         NSLog(@"Skipping unrecognized peripheral: %@", peripheral.name);
     }
@@ -146,6 +149,7 @@
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     NSLog(@"BLE: Failed to connect to %@. (%@)", peripheral, [error localizedDescription]);
+    [_pendingPeripherals removeObject:peripheral];
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
@@ -158,8 +162,16 @@
     }
     
     _currentConnection = [[GpsReceiver alloc] initWithPeripheral:peripheral delegate:self];
+    [_pendingPeripherals removeObject:peripheral];
     
     [self stopScan];
+}
+
+-(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    NSLog(@"Disconnected.");
+    _currentConnection = nil;
+    [self startScan];
 }
 
 

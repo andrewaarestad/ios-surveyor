@@ -14,9 +14,11 @@
 		49A166111C66C1C000E000B5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 49A1660E1C66C1C000E000B5 /* Settings.bundle */; };
 		49A166151C66D2EF00E000B5 /* 01_us_states.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 49A166131C66D2EF00E000B5 /* 01_us_states.geojson */; };
 		49A166161C66D2EF00E000B5 /* 02_canada_provinces.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 49A166141C66D2EF00E000B5 /* 02_canada_provinces.geojson */; };
-		49A1661C1C67170800E000B5 /* GpsReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A1661B1C67170800E000B5 /* GpsReceiver.m */; };
 		49A166221C67AA3F00E000B5 /* NmeaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = 49A1661E1C67AA3F00E000B5 /* NmeaParser.c */; };
 		49A166231C67AA3F00E000B5 /* PvtManager.c in Sources */ = {isa = PBXBuildFile; fileRef = 49A166201C67AA3F00E000B5 /* PvtManager.c */; };
+		49A1662B1C67DFD400E000B5 /* GpsEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A166261C67DFD400E000B5 /* GpsEvent.m */; };
+		49A1662C1C67DFD400E000B5 /* GpsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A166281C67DFD400E000B5 /* GpsInterface.m */; };
+		49A1662D1C67DFD400E000B5 /* GpsReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A1662A1C67DFD400E000B5 /* GpsReceiver.m */; };
 		49B0876C1AA1889700147015 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B0876B1AA1889700147015 /* main.m */; };
 		49B0876F1AA1889700147015 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B0876E1AA1889700147015 /* AppDelegate.m */; };
 		49B087751AA1889700147015 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B087741AA1889700147015 /* ViewController.m */; };
@@ -24,8 +26,6 @@
 		49B0877A1AA1889700147015 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B087791AA1889700147015 /* Images.xcassets */; };
 		49B0877D1AA1889700147015 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49B0877B1AA1889700147015 /* LaunchScreen.xib */; };
 		49B087891AA1889700147015 /* SurveyorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B087881AA1889700147015 /* SurveyorTests.m */; };
-		49B087D41AA188DF00147015 /* GpsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B087D11AA188DF00147015 /* GpsInterface.m */; };
-		49B087D51AA188DF00147015 /* GpsEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B087D31AA188DF00147015 /* GpsEvent.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,12 +46,16 @@
 		49A1660E1C66C1C000E000B5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = Mapbox.framework/Settings.bundle; sourceTree = "<group>"; };
 		49A166131C66D2EF00E000B5 /* 01_us_states.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 01_us_states.geojson; sourceTree = "<group>"; };
 		49A166141C66D2EF00E000B5 /* 02_canada_provinces.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 02_canada_provinces.geojson; sourceTree = "<group>"; };
-		49A1661A1C67170800E000B5 /* GpsReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsReceiver.h; sourceTree = "<group>"; };
-		49A1661B1C67170800E000B5 /* GpsReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsReceiver.m; sourceTree = "<group>"; };
 		49A1661E1C67AA3F00E000B5 /* NmeaParser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = NmeaParser.c; sourceTree = "<group>"; };
 		49A1661F1C67AA3F00E000B5 /* NmeaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NmeaParser.h; sourceTree = "<group>"; };
 		49A166201C67AA3F00E000B5 /* PvtManager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PvtManager.c; sourceTree = "<group>"; };
 		49A166211C67AA3F00E000B5 /* PvtManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PvtManager.h; sourceTree = "<group>"; };
+		49A166251C67DFD400E000B5 /* GpsEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsEvent.h; sourceTree = "<group>"; };
+		49A166261C67DFD400E000B5 /* GpsEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsEvent.m; sourceTree = "<group>"; };
+		49A166271C67DFD400E000B5 /* GpsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsInterface.h; sourceTree = "<group>"; };
+		49A166281C67DFD400E000B5 /* GpsInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsInterface.m; sourceTree = "<group>"; };
+		49A166291C67DFD400E000B5 /* GpsReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsReceiver.h; sourceTree = "<group>"; };
+		49A1662A1C67DFD400E000B5 /* GpsReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsReceiver.m; sourceTree = "<group>"; };
 		49B087661AA1889600147015 /* Surveyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Surveyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B0876A1AA1889600147015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49B0876B1AA1889700147015 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -65,10 +69,6 @@
 		49B087821AA1889700147015 /* SurveyorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SurveyorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B087871AA1889700147015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49B087881AA1889700147015 /* SurveyorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SurveyorTests.m; sourceTree = "<group>"; };
-		49B087D01AA188DF00147015 /* GpsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsInterface.h; sourceTree = "<group>"; };
-		49B087D11AA188DF00147015 /* GpsInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsInterface.m; sourceTree = "<group>"; };
-		49B087D21AA188DF00147015 /* GpsEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsEvent.h; sourceTree = "<group>"; };
-		49B087D31AA188DF00147015 /* GpsEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsEvent.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +113,19 @@
 			path = Surveyor/nmealib;
 			sourceTree = "<group>";
 		};
+		49A166241C67DFD400E000B5 /* GpsInterface */ = {
+			isa = PBXGroup;
+			children = (
+				49A166251C67DFD400E000B5 /* GpsEvent.h */,
+				49A166261C67DFD400E000B5 /* GpsEvent.m */,
+				49A166271C67DFD400E000B5 /* GpsInterface.h */,
+				49A166281C67DFD400E000B5 /* GpsInterface.m */,
+				49A166291C67DFD400E000B5 /* GpsReceiver.h */,
+				49A1662A1C67DFD400E000B5 /* GpsReceiver.m */,
+			);
+			path = GpsInterface;
+			sourceTree = "<group>";
+		};
 		49B0875D1AA1889600147015 = {
 			isa = PBXGroup;
 			children = (
@@ -141,12 +154,7 @@
 		49B087681AA1889600147015 /* Surveyor */ = {
 			isa = PBXGroup;
 			children = (
-				49B087D01AA188DF00147015 /* GpsInterface.h */,
-				49B087D11AA188DF00147015 /* GpsInterface.m */,
-				49A1661A1C67170800E000B5 /* GpsReceiver.h */,
-				49A1661B1C67170800E000B5 /* GpsReceiver.m */,
-				49B087D21AA188DF00147015 /* GpsEvent.h */,
-				49B087D31AA188DF00147015 /* GpsEvent.m */,
+				49A166241C67DFD400E000B5 /* GpsInterface */,
 				49B0876D1AA1889700147015 /* AppDelegate.h */,
 				49B0876E1AA1889700147015 /* AppDelegate.m */,
 				49B087731AA1889700147015 /* ViewController.h */,
@@ -306,14 +314,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49B087D51AA188DF00147015 /* GpsEvent.m in Sources */,
 				49B0876F1AA1889700147015 /* AppDelegate.m in Sources */,
 				49A166231C67AA3F00E000B5 /* PvtManager.c in Sources */,
-				49B087D41AA188DF00147015 /* GpsInterface.m in Sources */,
 				49B087751AA1889700147015 /* ViewController.m in Sources */,
+				49A1662B1C67DFD400E000B5 /* GpsEvent.m in Sources */,
+				49A1662C1C67DFD400E000B5 /* GpsInterface.m in Sources */,
 				49A166221C67AA3F00E000B5 /* NmeaParser.c in Sources */,
 				49B0876C1AA1889700147015 /* main.m in Sources */,
-				49A1661C1C67170800E000B5 /* GpsReceiver.m in Sources */,
+				49A1662D1C67DFD400E000B5 /* GpsReceiver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

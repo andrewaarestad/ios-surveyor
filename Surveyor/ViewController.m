@@ -104,11 +104,11 @@
                              animated:NO];
         
         
-        GpsEvent *gpsLocation = [[GpsEvent alloc] init];
-        gpsLocation.coord = location.coordinate;
-        [self locationAvailable:gpsLocation];
+        //GpsEvent *gpsLocation = [[GpsEvent alloc] init];
+        //gpsLocation.coord = location.coordinate;
+        //[self locationAvailable:gpsLocation];
         
-        [self.map selectAnnotation:_currentLocation animated:YES];
+        //[self.map selectAnnotation:_currentLocation animated:YES];
         
         _hasDoneInitialZoom = YES;
         
@@ -220,7 +220,7 @@
 
 -(void)locationAvailable:(GpsEvent *)location
 {
-    NSLog(@"Draw location on map: %@",location);
+    NSLog(@"Draw location on map: %f, %f",location.coord.latitude,location.coord.longitude);
     
     if (_currentLocation == nil){
         _currentLocation = [[MGLPointAnnotation alloc] init];
@@ -235,6 +235,8 @@
     
     
     [self.map addAnnotation:_currentLocation];
+    
+    [self.map setCenterCoordinate:location.coord animated:YES];
     
     
 }

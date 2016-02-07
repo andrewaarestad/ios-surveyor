@@ -28,6 +28,8 @@ void nmeaSentenceCallback(nmea_sentence_t *sentence)
             
             [delgRef locationReceived:iosLocation];
             
+            NSLog(@"RMC: %s",sentence->chars);
+            
         }
             break;
         default: {
@@ -131,7 +133,13 @@ void nmea_printf(const char* fmt, ...)
         // TODO: Handle bytes
         // receiveNmeaBytes: [characteristic.value bytes]
         
-        NSLog(@"Received bytes: %@",characteristic.value);
+        //NSLog(@"Received bytes: %@",characteristic.value);
+        
+        const char *bytes = [characteristic.value bytes];
+        
+        for (int ii=0; ii<characteristic.value.length; ii++){
+            receiveNmeaByte(bytes[ii]);
+        }
         
     }
     

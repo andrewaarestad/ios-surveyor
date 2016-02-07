@@ -50,6 +50,7 @@ void processSentence(char *sentence, int length);
 bool ensureSentenceValidity(char *sentence, int length);
 nmea_sentence_type_t extractSentenceId(char *sentence);
 double getUnixTime(char *hhmmss, char *datestr);
+double degreesMinutesToDecimalDegrees(char* degreesMinutes, int numDegreeChars);
 
 //===================================================
 // FUNCTION DEFINITIONS
@@ -206,7 +207,7 @@ gnss_location_t processRMC(char *sentence)
                  break;
 
              case 3:
-                 location.latitude = atof(token) / 100;
+                 location.latitude = degreesMinutesToDecimalDegrees(token,2);
                  break;
 
              case 4:
@@ -218,7 +219,7 @@ gnss_location_t processRMC(char *sentence)
                  break;
 
              case 5:
-                 location.longitude = atof(token) / 100;
+                 location.longitude = degreesMinutesToDecimalDegrees(token,3);
                  break;
 
              case 6:
@@ -259,6 +260,32 @@ gnss_location_t processRMC(char *sentence)
 
 }
 
+
+double degreesMinutesToDecimalDegrees(char* degreesMinutes, int numDegreeChars)
+{
+    unsigned long len = strlen(degreesMinutes);
+    
+    char degreeChars[numDegreeChars];
+    char minuteChars[len-numDegreeChars];
+    
+    int ii;
+    double degrees;
+    double minutes;
+    
+    for (ii=0; ii<numDegreeChars; ii++){
+        degreeChars[ii] = degreesMinutes[ii];
+    }
+    for (ii=0; ii<len-numDegreeChars; ii++){
+        minuteChars[ii] = degreesMinutes[ii+numDegreeChars];
+    }
+    
+    degrees = atof(degreeChars);
+    minutes = atof(minuteChars);
+    
+    degrees = degrees + minutes / 60;
+    
+    return degrees;
+}
 
 
 
