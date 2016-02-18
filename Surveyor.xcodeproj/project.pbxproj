@@ -19,6 +19,7 @@
 		49A1662B1C67DFD400E000B5 /* GpsEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A166261C67DFD400E000B5 /* GpsEvent.m */; };
 		49A1662C1C67DFD400E000B5 /* GpsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A166281C67DFD400E000B5 /* GpsInterface.m */; };
 		49A1662D1C67DFD400E000B5 /* GpsReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A1662A1C67DFD400E000B5 /* GpsReceiver.m */; };
+		49A166311C68509B00E000B5 /* becker_county_mn_parcels.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 49A166301C68509B00E000B5 /* becker_county_mn_parcels.geojson */; };
 		49B0876C1AA1889700147015 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B0876B1AA1889700147015 /* main.m */; };
 		49B0876F1AA1889700147015 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B0876E1AA1889700147015 /* AppDelegate.m */; };
 		49B087751AA1889700147015 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B087741AA1889700147015 /* ViewController.m */; };
@@ -56,6 +57,7 @@
 		49A166281C67DFD400E000B5 /* GpsInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsInterface.m; sourceTree = "<group>"; };
 		49A166291C67DFD400E000B5 /* GpsReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpsReceiver.h; sourceTree = "<group>"; };
 		49A1662A1C67DFD400E000B5 /* GpsReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GpsReceiver.m; sourceTree = "<group>"; };
+		49A166301C68509B00E000B5 /* becker_county_mn_parcels.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = becker_county_mn_parcels.geojson; sourceTree = "<group>"; };
 		49B087661AA1889600147015 /* Surveyor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Surveyor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B0876A1AA1889600147015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49B0876B1AA1889700147015 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		49A166121C66D2EF00E000B5 /* geojson */ = {
 			isa = PBXGroup;
 			children = (
+				49A166301C68509B00E000B5 /* becker_county_mn_parcels.geojson */,
 				49A166131C66D2EF00E000B5 /* 01_us_states.geojson */,
 				49A166141C66D2EF00E000B5 /* 02_canada_provinces.geojson */,
 			);
@@ -280,6 +283,7 @@
 				49A166111C66C1C000E000B5 /* Settings.bundle in Resources */,
 				49B0877D1AA1889700147015 /* LaunchScreen.xib in Resources */,
 				49B0877A1AA1889700147015 /* Images.xcassets in Resources */,
+				49A166311C68509B00E000B5 /* becker_county_mn_parcels.geojson in Resources */,
 				49A166161C66D2EF00E000B5 /* 02_canada_provinces.geojson in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

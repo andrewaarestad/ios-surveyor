@@ -12,6 +12,7 @@
 #import "GpsInterface.h"
 #import <Mapbox/Mapbox.h>
 #import <CoreLocation/CoreLocation.h>
+#import <CoreGraphics/CGBase.h>
 
 #define kMapboxMapID @"gathius.lb5ncnhg"
 
@@ -59,7 +60,8 @@
     
     
     
-    [self drawMultipolygon:[[NSBundle mainBundle] pathForResource:@"01_us_states" ofType:@"geojson"]];
+    [self drawMultipolygon:[[NSBundle mainBundle] pathForResource:@"01_us_states" ofType:@"geojson"] restricted:NO];
+    [self drawMultipolygon:[[NSBundle mainBundle] pathForResource:@"becker_county_mn_parcels" ofType:@"geojson"] restricted:YES];
     
     
     
@@ -74,6 +76,13 @@
     
     [GpsInterface start];
     [GpsInterface addObserver:self];
+    
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:46.73275 longitude:-95.81665];
+    
+    [self.map setCenterCoordinate:location.coordinate
+                        zoomLevel:13
+                         animated:NO];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
@@ -96,6 +105,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    /*
     if (!_hasDoneInitialZoom){
         CLLocation *location = [locations lastObject];
         
@@ -113,6 +123,7 @@
         _hasDoneInitialZoom = YES;
         
     }
+     */
 }
 
 
@@ -146,38 +157,127 @@
  */
 
 
-- (void)drawMultipolygon:(NSString*)jsonPath
+- (void)drawMultipolygon:(NSString*)jsonPath restricted:(BOOL)restricted
 {
+    
     // Perform GeoJSON parsing on a background thread
     dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(backgroundQueue, ^(void){
+        
+        NSArray *coord;
+        CLLocationDegrees lat;
+        CLLocationDegrees lng;
+        CLLocationCoordinate2D coordinate;
+        NSString *featureType;
+        NSString *featureName;
+        NSArray *featureCoords;
         
         // Load and serialize the GeoJSON into a dictionary filled with properly-typed objects
         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:[[NSData alloc] initWithContentsOfFile:jsonPath] options:0 error:nil];
 
         // Load the `features` dictionary for iteration
         for (NSDictionary *feature in jsonDict[@"features"]) {
-            NSString *featureType = feature[@"geometry"][@"type"];
-            NSString *featureName = feature[@"properties"][@"NAME"];
-            NSArray *featureCoords = feature[@"geometry"][@"coordinates"];
-            //NSLog(@"Trying to draw object featureType: %@",featureType);
-            // Our GeoJSON only has one feature: a line string
-            if ([featureType isEqualToString:@"MultiPolygon"]){
-                for (NSArray *polygonCoords in featureCoords){
-                    for (NSArray *polygonSubCoords in polygonCoords){
-                        [self drawPolygon:featureName coords:polygonSubCoords];
+            NSDictionary *geometry = feature[@"geometry"];
+            NSDictionary *properties = feature[@"properties"];
+            if (geometry != [NSNull null] && properties != nil){
+
+                featureType = feature[@"geometry"][@"type"];
+                featureName = feature[@"properties"][@"NAME"];
+                featureCoords = feature[@"geometry"][@"coordinates"];
+                
+                
+                
+                if (featureName == nil){
+                    featureName = properties[@"PIN"];
+                }
+                
+                if (featureName == nil){
+                    featureName = @"unknown";
+                } else if (featureName == [NSNull null]){
+                    featureName = @"null";
+                }
+                
+                if ([featureName isEqualToString:@"CONDOS"]){
+                    NSLog(@"This is the bad one.");
+                }
+                
+                
+                if (featureType != nil && featureName != nil && featureCoords != nil){
+                    //NSLog(@"Trying to draw object featureType: %@",featureType);
+                    // Our GeoJSON only has one feature: a line string
+                    if ([featureType isEqualToString:@"MultiPolygon"]){
+                        for (NSArray *polygonCoords in featureCoords){
+                            for (NSArray *polygonSubCoords in polygonCoords){
+                                coord = [polygonSubCoords objectAtIndex:0];
+                                lat = [[coord objectAtIndex:1] doubleValue];
+                                lng = [[coord objectAtIndex:0] doubleValue];
+                                if ([self distanceFromLand:lat lon:lng] < 3000 || !restricted){
+                                    
+                                    NSLog(@"Drawing feature: %@",featureName);
+                                    
+                                    [self drawPolygon:featureName coords:polygonSubCoords];
+                                }
+                            }
+                        }
+                    } else if ([featureType isEqualToString:@"Polygon"]) {
+                        for (NSArray *polygonCoords in featureCoords){
+                            coord = [polygonCoords objectAtIndex:0];
+                            lat = [[coord objectAtIndex:1] doubleValue];
+                            lng = [[coord objectAtIndex:0] doubleValue];
+                            if ([self distanceFromLand:lat lon:lng] < 3000 || !restricted){
+                                
+                                NSLog(@"Drawing feature: %@",featureName);
+                                
+                                [self drawPolygon:featureName coords:polygonCoords];
+                            }
+                        }
+                    } else {
+                        NSLog(@"Unsupported feature type: %@",featureType);
                     }
+                } else {
+                    NSLog(@"Invalid feature: %@",feature);
                 }
-            } else if ([featureType isEqualToString:@"Polygon"]) {
-                for (NSArray *polygonCoords in featureCoords){
-                    [self drawPolygon:featureName coords:polygonCoords];
-                }
+                
+                
+                
             } else {
-                NSLog(@"Unsupported feature type: %@",featureType);
+                NSLog(@"Skipping unrecognized feature: %@",feature);
             }
         }
 
     });
+}
+
+-(double)degreesToRadians:(double)degrees
+{
+    return degrees * M_PI / 180.0;
+}
+
+-(double)distanceFromLand:(double) lat lon:(double)lon
+{
+    double targetLat = 46.73275;
+    double targetLon = -95.81665;
+    double dLat = lat - targetLat;
+    double dLon = lon - targetLon;
+    
+    dLat = [self degreesToRadians:dLat];
+    dLon = [self degreesToRadians:dLon];
+    
+    
+    double R = 6371000;
+    double lat2 = [self degreesToRadians:lat];
+    double lat1 = [self degreesToRadians:targetLat];
+    
+    
+    double a = sin(dLat/2) * sin(dLat/2) +
+            sin(dLon/2) * sin(dLon/2) *
+            cos(lat1) * cos(lat2);
+    double c = 2 * atan2(sqrt(a), sqrt(1-a));
+    double d = R * c;
+    
+    //NSLog(@"Distance: %f",d);
+    
+    return d;
 }
 
 -(void)drawPolygon:(NSString*) name coords:(NSArray*)coords
